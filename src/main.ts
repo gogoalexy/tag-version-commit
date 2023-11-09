@@ -3,7 +3,7 @@
 
 import {getInput, setFailed, info, setOutput, debug} from '@actions/core';
 import {exec} from '@actions/exec';
-import {context, getOctokit} from '@actions/github';
+import {context, getOctokit, event} from '@actions/github';
 import {count_capture_groups} from './utils';
 
 async function run_throws(): Promise<void> {
@@ -48,7 +48,7 @@ async function run_throws(): Promise<void> {
   }
 
   // Check if the commit matches the version regex
-  const commit_message = commit.data.message;
+  const commit_message = event.head_commit.message;
   const commit_message_array = commit_message.split('\n');
   const commit_title = commit_message_array[0];
   // Check either commit title or the whole commit message depending on the option
