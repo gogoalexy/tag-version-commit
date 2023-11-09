@@ -48,19 +48,30 @@ function run_throws() {
         const repo_name = github_1.context.repo.repo;
         const commit_sha = input_commit.length === 0 ? github_1.context.sha : input_commit;
         (0, core_1.debug)(`Using commit: ${commit_sha}`);
+        (0, core_1.debug)('octokit start');
         const octokit = (0, github_1.getOctokit)(token);
+        (0, core_1.debug)('octokit end');
         // Get message of last commit
         const commit = yield octokit.rest.git.getCommit({
             owner: repo_owner,
             repo: repo_name,
             commit_sha
         });
+        (0, core_1.debug)('octokit got');
         if (200 !== commit.status) {
             (0, core_1.setFailed)(`Failed to get commit data (status=${commit.status})`);
             return;
         }
+        if (!github_1.context.payload) {
+            throw new Error('No payload found in the context.');
+        }
+        if (!github_1.context.payload.commits ||
+            !github_1.context.payload.commits.length) {
+            (0, core_1.debug)(' - skipping commits');
+        }
+        (0, core_1.debug)('message got');
         // Check if the commit matches the version regex
-        const commit_message = commit.data.message;
+        const commit_message = github_1.context.payload.commits[0].message;
         const commit_message_array = commit_message.split('\n');
         const commit_title = commit_message_array[0];
         // Check either commit title or the whole commit message depending on the option

@@ -3,7 +3,7 @@
 
 import {getInput, setFailed, info, setOutput, debug} from '@actions/core';
 import {exec} from '@actions/exec';
-import {context, getOctokit, event} from '@actions/github';
+import {context, getOctokit} from '@actions/github';
 import {count_capture_groups} from './utils';
 
 async function run_throws(): Promise<void> {
