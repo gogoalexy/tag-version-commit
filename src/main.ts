@@ -34,7 +34,11 @@ async function run_throws(): Promise<void> {
   const commit_sha = input_commit.length === 0 ? context.sha : input_commit;
   debug(`Using commit: ${commit_sha}`);
 
+  debug('octokit start')
+
   const octokit = getOctokit(token);
+
+  debug('octokit end')
 
   // Get message of last commit
   const commit = await octokit.rest.git.getCommit({
@@ -42,6 +46,9 @@ async function run_throws(): Promise<void> {
     repo: repo_name,
     commit_sha
   });
+
+  debug('octokit got')
+
   if (200 !== commit.status) {
     setFailed(`Failed to get commit data (status=${commit.status})`);
     return;
@@ -57,6 +64,8 @@ async function run_throws(): Promise<void> {
   ) {
     debug(' - skipping commits')
   }
+
+  debug('message got')
 
   // Check if the commit matches the version regex
   const commit_message = context.payload.commits[0].message;
