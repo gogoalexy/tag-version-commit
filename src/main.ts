@@ -47,8 +47,19 @@ async function run_throws(): Promise<void> {
     return;
   }
 
+  if (!context.payload) {
+    throw new Error('No payload found in the context.')
+  }
+
+  if (
+    !context.payload.commits ||
+    !context.payload.commits.length
+  ) {
+    debug(' - skipping commits')
+  }
+
   // Check if the commit matches the version regex
-  const commit_message = event.head_commit.message;
+  const commit_message = context.payload.commits[0].message;
   const commit_message_array = commit_message.split('\n');
   const commit_title = commit_message_array[0];
   // Check either commit title or the whole commit message depending on the option
